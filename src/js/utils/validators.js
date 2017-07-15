@@ -66,3 +66,7 @@ export function verifyNumber(amount) {
 export function verifyNonce(nonce, future) {
   return (new BigNumber(nonce).plus(future || 0)).toNumber()
 }
+
+export function verifyABI(abi) {
+  return JSON.parse(abi)
+}

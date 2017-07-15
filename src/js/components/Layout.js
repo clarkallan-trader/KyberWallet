@@ -10,7 +10,7 @@ import Transactions from "../components/Transactions"
 import Dashboard from "../components/Dashboard"
 import Exchange from "../components/Exchange"
 import Wallets from "../components/Wallets"
-import Payment from "../components/Payment"
+import Contracts from "../components/Contracts"
 import TermOfService from "../components/TermOfService"
 import SideBar from "../components/SideBar"
 
@@ -44,7 +44,7 @@ export default class Layout extends React.Component {
               <Route exact path="/wallets" component={Wallets}/>
               <Route exact path="/transactions" component={Transactions}/>
               <Route exact path="/exchange" component={Exchange}/>
-              <Route exact path="/payment" component={Payment}/>
+              <Route exact path="/contracts" component={Contracts}/>
             </div>
           </div>
         </div>

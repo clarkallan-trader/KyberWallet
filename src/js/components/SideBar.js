@@ -38,12 +38,12 @@ export default class SideBar extends React.Component {
             </li>
             <li class={this.tabClasses("/wallets")}>
               <Link to="/wallets">
-                <i class="k-icon k-icon-wallet"></i> Wallet
+                <i class="k-icon k-icon-wallet"></i> Wallets
               </Link>
             </li>
-            <li class={this.tabClasses("/payment")}>
-              <Link to="/payment">
-                <i class="k-icon k-icon-payment"></i> Payment
+            <li class={this.tabClasses("/contracts")}>
+              <Link to="/contracts">
+                <i class="k-icon k-icon-payment"></i> Contracts
               </Link>
             </li>
             <li class={this.tabClasses("/transactions")}>

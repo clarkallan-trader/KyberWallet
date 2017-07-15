@@ -15,7 +15,6 @@ const accounts = (state=initState, action) => {
         var accounts = {}
         Object.keys(loadedAccounts).forEach((address) => {
           var accMap = loadedAccounts[address]
-          console.log(accMap)
           var acc = new Account(
             accMap.address,
             accMap.key,
