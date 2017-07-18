@@ -3,7 +3,7 @@ import { connect } from "react-redux"
 
 import { specifyName, specifyAddress, specifyABI, emptyForm, throwError } from "../actions/newContractFormActions"
 import { addContract } from "../actions/contractActions"
-import { verifyAccount, verifyABI } from "../utils/validators"
+import { verifyAccount, verifyABI, anyErrors } from "../utils/validators"
 
 
 @connect((store) => {
@@ -11,16 +11,17 @@ import { verifyAccount, verifyABI } from "../utils/validators"
     name: store.newContractForm.name,
     address: store.newContractForm.address,
     abi: store.newContractForm.abi,
-    error: store.newContractForm.error,
+    addressError: store.newContractForm.errors["addressError"],
+    abiError: store.newContractForm.errors["abiError"],
   }
 })
 export default class NewContractForm extends React.Component {
 
   verify = () => {
-    var name = this.props.name
-    var address = verifyAccount(this.props.address)
-    var abi = verifyABI(this.props.abi)
-    return { name, address, abi }
+    var errors = {}
+    errors["addressError"] = verifyAccount(this.props.address)
+    errors["abiError"] = verifyABI(this.props.abi)
+    return errors
   }
 
   specifyName = (event) => {
@@ -37,16 +38,15 @@ export default class NewContractForm extends React.Component {
 
   newContract = (event) => {
     event.preventDefault()
-    try {
-      var params = this.verify()
-      this.props.dispatch(addContract(
-        params.name, params.address,
-        params.abi))
-      this.props.dispatch(emptyForm())
-    } catch (e) {
-      console.log(e)
-      this.props.dispatch(throwError(e.message))
-    }
+      var errors = this.verify()
+      if (anyErrors(errors)) {
+        this.props.dispatch(throwError(errors))
+      } else {
+        this.props.dispatch(addContract(
+          this.props.name, this.props.address,
+          JSON.parse(this.props.abi)))
+        this.props.dispatch(emptyForm())
+      }
   }
 
 
@@ -62,12 +62,13 @@ export default class NewContractForm extends React.Component {
           <label>
             Address:
             <input value={this.props.address} onChange={this.specifyAddress} type="text" />
+            <p>address error: {this.props.addressError}</p>
           </label>
           <label>
             ABI:
             <textarea value={this.props.abi} onChange={this.specifyABI}></textarea>
+            <p>abi error: {this.props.abiError}</p>
           </label>
-          <p>error: {this.props.error}</p>
           <button class="button" onClick={this.newContract}>Import</button>
         </form>
       </div>

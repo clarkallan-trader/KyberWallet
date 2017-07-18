@@ -2,7 +2,10 @@ const initState = {
   name: "",
   address: "",
   abi: "",
-  error: "",
+  errors: {
+    "addressError": "",
+    "abiError":"",
+  },
 }
 
 const newContractForm = (state=initState, action) => {
@@ -20,7 +23,7 @@ const newContractForm = (state=initState, action) => {
       return {...initState}
     }
     case "NEW_CONTRACT_FORM_ERROR_THREW": {
-      return {...state, error: action.payload }
+      return {...state, errors: action.payload }
     }
   }
   return state

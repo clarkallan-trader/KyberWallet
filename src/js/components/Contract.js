@@ -21,8 +21,8 @@ export default class Contract extends React.Component {
     })
     return (
       <div>
-        <p>Name: {this.props.name}</p>
-        <p>Address: {this.props.address}</p>
+        <p>Name: {this.props.contract.name}</p>
+        <p>Address: {this.props.contract.address}</p>
         <p>Functions</p>
         {functions}
       </div>
