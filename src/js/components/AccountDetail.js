@@ -45,7 +45,7 @@ export default class AccountDetail extends React.Component {
     for(var i = 0; i < numRow ; i ++){
       var row = [];
       for(var j=0;j<rowCountItem;j++){
-        if (tokens[rowCountItem*i + j]) row.push(tokens[rowCountItem*i + j]);  
+        if (tokens[rowCountItem*i + j]) row.push(tokens[rowCountItem*i + j]);
       }
       tokenRow.push(row)
     }
@@ -67,7 +67,7 @@ export default class AccountDetail extends React.Component {
                 <button class="modiy" title="Modify">
                   <i class="k-icon k-icon-modify-green"></i>
                 </button>
-            </div> 
+            </div>
           </div>
           <div class="content">
             <div class="balance">
@@ -79,14 +79,12 @@ export default class AccountDetail extends React.Component {
               <span>{this.props.address}</span>
               <div>
                <QRCode value={this.props.address} />
-              </div>              
+              </div>
             </div>
           </div>
         </div>
         <div class="wallet-center">
-          
-            {tokenRowrender}                      
-          
+          {tokenRowrender}
         </div>
       </div>
     </div>
