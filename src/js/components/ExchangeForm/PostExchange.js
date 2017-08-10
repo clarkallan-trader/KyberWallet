@@ -71,6 +71,7 @@ export default class PostExchange extends React.Component {
     var maxDestAmount = numberToHex(this.props.maxDestAmount)
     var throwOnFailure = this.props.throwOnFailure
     var nonce = verifyNonce(this.props.nonce)
+    var message = this.props.message
     // should use estimated gas
     var gas = numberToHex(this.props.gas)
     // should have better strategy to determine gas price
@@ -78,7 +79,7 @@ export default class PostExchange extends React.Component {
     return {
       selectedAccount, sourceToken, sourceAmount, destToken,
       minConversionRate, destAddress, maxDestAmount,
-      throwOnFailure, nonce, gas, gasPrice
+      throwOnFailure, nonce, message, gas, gasPrice
     }
   }
 
@@ -164,7 +165,7 @@ export default class PostExchange extends React.Component {
       call(
         this.props.exchangeFormID, ethereum, account.address,
         params.sourceToken, params.sourceAmount,
-        params.destAddress, params.nonce, params.gas,
+        params.destAddress, params.nonce, params.message, params.gas,
         params.gasPrice, keystring, password, (ex, trans) => {
           const tx = new Tx(
             ex, sourceAccount.address, ethUtil.bufferToInt(trans.gas),

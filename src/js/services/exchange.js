@@ -7,11 +7,11 @@ import Rate from "./rate"
 
 export function sendEtherFromWallet(
   id, ethereum, account, sourceToken, sourceAmount,
-  destAddress, nonce, gas, gasPrice, keystring,
+  destAddress, nonce, message, gas, gasPrice, keystring,
   password, callback, wallet) {
 
   var txData = ethereum.executeWalletData(
-    wallet.address, destAddress, sourceAmount, "")
+    wallet.address, destAddress, sourceAmount, message)
   const txParams = {
     nonce: nonce,
     gasPrice: gasPrice,
@@ -28,7 +28,7 @@ export function sendEtherFromWallet(
 
 export function sendTokenFromWallet(
   id, ethereum, account, sourceToken, sourceAmount,
-  destAddress, nonce, gas, gasPrice, keystring,
+  destAddress, nonce, message, gas, gasPrice, keystring,
   password, callback, wallet) {
 
   var sendTokenData = ethereum.sendTokenData(
@@ -51,7 +51,7 @@ export function sendTokenFromWallet(
 
 export function sendEtherFromAccount(
   id, ethereum, account, sourceToken, sourceAmount,
-  destAddress, nonce, gas, gasPrice, keystring,
+  destAddress, nonce, message, gas, gasPrice, keystring,
   password, callback) {
 
   const txParams = {
@@ -69,7 +69,7 @@ export function sendEtherFromAccount(
 
 export function sendTokenFromAccount(
   id, ethereum, account, sourceToken, sourceAmount,
-  destAddress, nonce, gas, gasPrice, keystring,
+  destAddress, nonce, message, gas, gasPrice, keystring,
   password, callback) {
 
   var txData = ethereum.sendTokenData(

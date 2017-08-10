@@ -1,7 +1,7 @@
 // in this package, all number are in 18 decimals precision
 
 import BigNumber from 'bignumber.js'
-
+import web3 from "web3"
 import supported_tokens from "../services/supported_tokens"
 import constants from "../services/constants"
 
@@ -110,6 +110,11 @@ export function pairID(source, dest) {
 export function numberToHex(number) {
   return "0x" + (new BigNumber(number)).toString(16)
 }
+
+export function toHex(string) {
+  return web3.toHex(string)
+}
+
 
 export function hexToNumber(hex) {
   return new BigNumber(hex).toNumber()
