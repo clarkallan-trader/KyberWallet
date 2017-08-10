@@ -76,6 +76,10 @@ const exchangeForm = (state=initState, action) => {
       newState[id].errors = {...newState[id].errors, destAddressError: ""}
       return newState
     }
+    case "MESSAGE_SPECIFIED": {
+      newState[id].message = action.payload      
+      return newState
+    }
     case "GAS_PRICE_SPECIFIED": {
       newState[id].gasPrice = action.payload
       newState[id].errors = {...newState[id].errors, gasPriceError: ""}

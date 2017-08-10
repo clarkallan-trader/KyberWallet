@@ -12,10 +12,12 @@ import PostExchange from "./ExchangeForm/PostExchange"
 import CrossSend from "./ExchangeForm/CrossSend"
 import MinRate from "./ExchangeForm/MinRate"
 import Advanced from "./ExchangeForm/Advanced"
+import DataMessage from "./ExchangeForm/DataMessage"
+
 import constants from "../services/constants"
 import ReactTooltip from 'react-tooltip'
 
-import { specifyGasLimit, specifyGasPrice, resetStep, selectAdvance, deselectAdvance } from "../actions/exchangeFormActions"
+import { specifyMessage, specifyGasLimit, specifyGasPrice, resetStep, selectAdvance, deselectAdvance } from "../actions/exchangeFormActions"
 import { errorName } from "../utils/converter"
 
 const quickExchangeModalID = "quick-exchange-modal"
@@ -38,9 +40,15 @@ const quickExchangeModalID = "quick-exchange-modal"
     isCrossSend: sourceToken != destToken,
     advanced: exchangeForm.advanced,
     bcError: exchangeForm.bcError,
+    message: exchangeForm.message
   }
 })
 export default class ExchangeForm extends React.Component {
+
+  specifyMessage = (event) => {
+    this.props.dispatch(
+      specifyMessage(this.props.exchangeFormID, event.target.value))
+  }
 
   specifyGas = (event) => {
     this.props.dispatch(
@@ -261,6 +269,12 @@ export default class ExchangeForm extends React.Component {
               </div>
               <div class="page-item item-advance">
                 <div class="content">
+                  {
+                    this.props.exchangeFormID === "quick-send" ?
+                    <DataMessage  msgHandler={this.specifyMessage} message={this.props.message} onKeyPress={(event) => this.focusNext('gas_limit', event)}/>
+                    : ""  
+                  }
+                  
                   <TransactionConfig gas={this.props.gas}
                     gasError={this.props.gasError}
                     gasPrice={this.props.gasPrice}

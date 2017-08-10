@@ -56,6 +56,13 @@ export function specifyRecipient(id, addr) {
     meta: id,
   }
 }
+export function specifyMessage(id, message) {
+  return {
+    type: "MESSAGE_SPECIFIED",
+    payload: message,
+    meta: id,
+  }
+}
 
 export function specifyGasLimit(id, gas) {
   return {

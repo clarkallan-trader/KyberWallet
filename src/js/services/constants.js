@@ -40,6 +40,7 @@ const INIT_EXCHANGE_FORM_STATE = {
   broadcasting: true,
   bcError: "",
   txHash: "",
+  message: "",
   errors: {
     selectedAccountError: "",
     destAddressError: "",
