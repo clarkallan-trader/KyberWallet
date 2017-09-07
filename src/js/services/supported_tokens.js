@@ -12,10 +12,10 @@ var TOKENS = [
     address: "0x950b87923d52b09b1050abda589f91521e17e606"
   },
   {
-    name: "Gnosis",
-    symbol: "GNO",
-    icon: "/assets/gnosis-logo.png",
-    address: "0x2c018fc6c9bb2b7653136dc7c5b7b588f2d11986"
+    name: "KN Crystal",
+    symbol: "KNC",
+    icon: "/assets/knc-logo.png",
+    address: "0xcec33022262c9f6ff3b45e394180310080faae56"
   },
 ]
 
