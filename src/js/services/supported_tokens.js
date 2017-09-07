@@ -15,7 +15,7 @@ var TOKENS = [
     name: "KN Crystal",
     symbol: "KNC",
     icon: "/assets/knc-logo.png",
-    address: "0xcec33022262c9f6ff3b45e394180310080faae56"
+    address: "0x53a80ad1c0ed7acc3f2fe005e30e498a2f8d0c33"
   },
 ]
 
