@@ -1,26 +1,40 @@
-# KyberNetwork inhouse web wallet
-Kyber web wallet helps users to interact directly with KyberNetwork in order to exchange their ethers and tokens.
-You can see a walkthrough on Youtube [here](https://www.youtube.com/watch?v=v2bdcChFEuQ).
+# KyberSwap: Instantly Convert Your Tokens
 
-## Live deployment
-We deployed the [MVP](https://github.com/KyberNetwork/KyberWallet/releases/tag/MVP) of the wallet at [https://testnet-wallet.kyber.network](https://testnet-wallet.kyber.network). Any other websites that claims to be Kyber Wallet is fake and might contain malicious scripts to scam or steal your assets.
+KyberSwap allows users to directly interact with Kyber's decentralized liquidity network and instantly swap/ trade their tokens. Check our website at https://kyberswap.com
 
 ## Install dependencies
-The wallet is developed on `Nodejs`, we assume users have it installed in their environment. *We suggest to use Node v7.3.0*
+
+The wallet is developed on `Nodejs`, we assume users have it installed in their environment. _We suggest to use Node v7.3.0_
+
 ```
 npm install
 ```
 
-## Run in development mode
+## Run in development mode (ropsten network)
+
 ```
-npm run dev
+npm run ropsten
 ```
-Once it is running, user can access to the wallet by going to `http://localhost:3000`
+
+Once it is running, user can access to the wallet by going to `http://localhost:3002`
 
 ## Build production app
+
 ```
-npm run build
+npm run build-production
 ```
 
 ## Code structure
-This wallet is using `Reactjs` and `Redux` and following their naming conventions. Source code of the wallet is in `src`. Most of the logic is in `src/js`.
+
+This repository is using `Reactjs` and `Redux` and following their naming conventions. Source code of the wallet is in `src`. Most of the logic is in `src/js`.
+
+## Migrate media data
+```
+bundle exec rake master_data:media_post
+```
+
+## Deploy staging:
+```
+git tag -f deploy_staging
+git push -f <origin/upstream> deploy_staging
+```

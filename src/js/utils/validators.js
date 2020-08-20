@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
-import * as ethUtil from 'ethereumjs-util'
-import TOKENS from "../services/supported_tokens"
 import constants from "../services/constants"
+import { compareTwoNumber } from "./converter";
 
 export function verifyAccount(addr) {
   var valid = /^0x[0-9a-fA-F]{40}$/.test(addr)
@@ -16,48 +15,93 @@ export function verifyKey(keystring) {
       return "Invalid keystore file"
     }
   } catch (e) {
-    console.log(e)
     return "Malformed JSON keystore file"
   }
   return null
 }
 
-export function verifyToken(addr) {
-  if (!ethUtil.isValidAddress(addr)) {
-    return "invalid"
-  } else {
-    for (var i = 0; i < TOKENS.length; i++) {
-      if (TOKENS[i].address == addr) {
-        return null
-      }
-    }
-    if (addr != constants.ETHER_ADDRESS) {
-      return "unsupported"
-    } else {
-      return null
-    }
-  }
-}
+export function verifyAmount(sourceAmount,
+  balance,
+  sourceSymbol,
+  sourceDecimal,
+  rate, destSymbol, destDecimal, maxCap) {
 
-export function verifyAmount(amount, max) {
-  var result = new BigNumber(amount)
-  if (result == 'NaN' || result == 'Infinity') {
+  var testAmount = parseFloat(sourceAmount)
+  if (isNaN(testAmount)) {
     return "not a number"
   }
-  if (max != undefined) {
-    var maxBig = new BigNumber(max)
-    if (maxBig == 'NaN' || maxBig == 'Infinity') {
-      throw new Error("Invalid upper bound for amount")
-    }
-    if (result.cmp(maxBig) > 0) {
-      return "too high"
-    }
-    if (result.cmp(constants.EPSILON) < 0) {
-      return "too low"
+  var sourceAmountWei = new BigNumber(sourceAmount)
+  if (sourceAmountWei == 'NaN' || sourceAmountWei == 'Infinity') {
+    return "not a number"
+  }
+  //var weiParam = new BigNumber(10)
+  sourceAmountWei = sourceAmountWei.times(Math.pow(10, sourceDecimal))
+
+
+  //verify min source amount
+  var rateBig = new BigNumber(rate)
+  var estimateValue = sourceAmountWei
+  if (sourceSymbol !== "ETH") {
+    estimateValue = rateBig.times(sourceAmountWei).div(Math.pow(10, sourceDecimal))
+  }
+  var epsilon = new BigNumber(constants.EXCHANGE_CONFIG.EPSILON)
+  var delta = estimateValue.minus(epsilon).abs()
+  var acceptDetal = new BigNumber(constants.EXCHANGE_CONFIG.MIN_ACCEPT_DELTA)
+
+  if (compareTwoNumber(rateBig, 0) === 1 && estimateValue.isLessThan(epsilon) && !delta.div(epsilon).isLessThan(acceptDetal)) {
+    return "too small"
+  }
+
+  //verify max cap
+  //estimate value based on eth
+  if ((sourceSymbol !== "ETH" || destSymbol !== "WETH") && (sourceSymbol !== "WETH" || destSymbol !== "ETH")){
+    if (maxCap !== "infinity") {
+      var maxCap = new BigNumber(maxCap)
+      if (sourceSymbol !== "ETH") {
+        maxCap = maxCap.multipliedBy(constants.EXCHANGE_CONFIG.MAX_CAP_PERCENT)
+      }
+      if (estimateValue.isGreaterThan(maxCap)) {
+        return "too high cap"
+      }
     }
   }
+
+  //verify balance for source amount
+  var sourceBalance = new BigNumber(balance)
+  if (sourceBalance == 'NaN' || sourceBalance == 'Infinity') {
+    throw new Error("Invalid upper bound for amount")
+  }
+  if (sourceAmountWei.isGreaterThan(sourceBalance)) {
+    return "too high"
+  }
+
+
   return null
-  // return "0x" + result.toString(16)
+}
+
+export function verifyBalanceForTransaction(ethBalance, sourceSymbol, sourceAmount, gas, gasPrice) {
+  var bigEthBalance = new BigNumber(ethBalance.toString())
+
+  if (typeof gasPrice === "undefined" || gasPrice === "") gasPrice = 0
+
+  var gasPriceBig = new BigNumber(gasPrice.toString())
+  var txFee = gasPriceBig.times(1000000000).times(gas)
+  var totalFee
+
+  if (sourceSymbol === "ETH") {
+    if (sourceAmount === "") sourceAmount = 0
+    var value = new BigNumber(sourceAmount.toString())
+    value = value.times(1000000000000000000)
+    totalFee = txFee.plus(value)
+  } else {
+    totalFee = txFee
+  }
+
+  if (totalFee.isGreaterThan(bigEthBalance)) {
+    return "not enough"
+  }
+
+  return null
 }
 
 export function verifyNumber(amount) {
@@ -65,11 +109,10 @@ export function verifyNumber(amount) {
   if (result == 'NaN' || result == 'Infinity') {
     return "invalid number"
   }
-  if (result.cmp(0) < 0) {
+  if (result.isLessThan(0) < 0) {
     return "nagative"
   }
   return null
-  // return "0x" + result.toString(16)
 }
 
 export function verifyNonce(nonce, future) {
@@ -87,9 +130,24 @@ export function anyErrors(errors) {
 }
 
 export function verifyPassphrase(passphrase, repassphrase) {
-  if (passphrase !== repassphrase){
-    return "Passphrase confirmation is not match"
-  }else{
+  if (passphrase !== repassphrase) {
+    return "Password confirmation is not match"
+  } else {
     return null
   }
+}
+
+export function filterInputNumber(event, value, preVal) {
+  var strRemoveText = value.replace(/[^0-9.]/g, '')
+  var str = strRemoveText.replace(/\./g, (val, i) => {
+    if (strRemoveText.indexOf('.') != i) val = ''
+    return val
+  })
+  if(str === "."){
+    str = "0."
+  }
+  event.target.value = str
+
+  if (preVal === str) return false
+  return true
 }

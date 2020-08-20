@@ -3,6 +3,7 @@ import scrypt from 'scryptsy'
 import crypto from 'crypto'
 
 
+
 function decipherBuffer(decipher, data) {
   return Buffer.concat([decipher.update(data), decipher.final()])
 }
@@ -20,7 +21,7 @@ export function addressFromKey(keystring) {
   }
 }
 
-export function unlock(input, password, nonStrict) {
+export function unlock(input, password, nonStrict, translate = null) {
     var json = (typeof input === 'object') ? input : JSON.parse(nonStrict ? input.toLowerCase() : input)
     if (json.version !== 3) {
         throw new Error('Not a V3 wallet')
@@ -40,9 +41,12 @@ export function unlock(input, password, nonStrict) {
         throw new Error('Unsupported key derivation scheme')
     }
     var ciphertext = new Buffer(json.crypto.ciphertext, 'hex')
-    var mac = ethUtil.sha3(Buffer.concat([derivedKey.slice(16, 32), ciphertext]))
+    var mac = ethUtil.keccak(Buffer.concat([derivedKey.slice(16, 32), ciphertext]))
     if (mac.toString('hex') !== json.crypto.mac) {
-        throw new Error('Key derivation failed - possibly wrong passphrase')
+        if (translate) {
+          throw new Error(translate("error.key_derivation_failed") || 'Key derivation failed - possibly wrong password');
+        }
+        throw new Error('Key derivation failed - possibly wrong password')
     }
     var decipher = crypto.createDecipheriv(json.crypto.cipher, derivedKey.slice(0, 16), new Buffer(json.crypto.cipherparams.iv, 'hex'))
     var seed = decipherBuffer(decipher, ciphertext, 'hex')
@@ -51,4 +55,10 @@ export function unlock(input, password, nonStrict) {
         seed = Buffer.concat([nullBuff, seed]);
     }
     return seed
+}
+
+export function addressFromPrivateKey(privateKey){
+    var addBuf = ethUtil.privateToAddress(new Buffer(privateKey, 'hex'))
+    var addrString = ethUtil.bufferToHex(addBuf)
+    return addrString
 }
